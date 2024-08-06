@@ -2,6 +2,8 @@
 
 A simple app for adding a block rule into Windows Firewall rules for multiple .exe files within a directory. 
 
+### [Get the Latest Release](https://github.com/edgarbarney/BulkExeFirewallBlocker/releases/latest)
+
 This can also be accomplished with batch scripts. But for non-programmers; if Windows updates break workflow, they may not be able to use or modify the script.
 This app makes the process easier.
 
