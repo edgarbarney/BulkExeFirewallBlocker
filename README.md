@@ -1,4 +1,4 @@
-# BulkExePublisher
+# Bulk Exe Firewall Blocker
 
 A simple app for adding a block rule into Windows Firewall rules for multiple .exe files within a directory. 
 
