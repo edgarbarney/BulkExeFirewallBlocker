@@ -30,25 +30,45 @@ jobs:
         run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 -o ./publish/normal
 
       - name: Build (standalone Windows)
-        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true -o ./publish/standalone
+        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/standalone
+
+      - name: Build (standalone Windows compressed)
+        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish/standalone_compressed
 
       - name: Zip normal build
-        run: Compress-Archive -Path ./publish/normal/* -DestinationPath ./normal-build.zip
+        run: Compress-Archive -Path ./publish/normal/* -DestinationPath ./win64_normal-build.zip
 
-      - name: Zip standalone build
-        run: Compress-Archive -Path ./publish/standalone/* -DestinationPath ./standalone-build.zip
-
+      - name: Move standalone exe
+        run: Move-Item -Path ./publish/standalone/BulkExeBlocker.exe -Destination ./win64_standalone.exe
+        
+      - name: Move standalone_compressed exe
+        run: Move-Item -Path ./publish/standalone_compressed/BulkExeBlocker.exe -Destination ./win64_standalone_compressed.exe
+        
+      - name: Get current date and time
+        id: datetime
+        run: echo "release_name=$(date +'%Y-%m-%d_%H-%M-%S')" >> $GITHUB_ENV
+        shell: bash
+        
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.${{ github.run_number }}
-          name: "Release v0.${{ github.run_number }}"
-          body: "Automated release from GitHub Actions"
+          tag_name: "${{ env.release_name }}"
+          name: "Release ${{ env.release_name }}"
+          body: |
+            ## 🚀 Automated Release from GitHub Actions 🚀
+
+            **Release Date:** ${{ env.RELEASE_NAME }}
+
+            ### Included Files:
+            - **normal-build.zip**: Requires .NET Runtime.
+            - **standalone.exe**: Self-contained, no .NET Runtime needed.
+            - **win64_standalone_compressed.exe**: Compressed version of the standalone file. May take a while to run but file size is smaller.
           draft: false
-          prerelease: false
+          prerelease: true
           files: |
-            ./normal-build.zip
-            ./standalone-build.zip
+            ./win64_normal-build.zip
+            ./win64_standalone.exe
+            ./win64_standalone_compressed.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
