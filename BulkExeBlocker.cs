@@ -11,19 +11,30 @@ namespace CSharpFormsTest
 			rulePrefixPreviewLabel.Text = $"{rulePrefixTextbox.Text}Block Inbound - Program.exe";
 		}
 
+		static void ReportToUser(string message, bool isError = false)
+		{
+			// Check if console app
+			//if (Console.GetCursorPosition() == (0, 0))
+			//{
+				MessageBox.Show(message, "Bulk Exe Blocker", MessageBoxButtons.OK, isError ? MessageBoxIcon.Error : MessageBoxIcon.Information);
+			//}
+			//else
+			//{
+				Console.WriteLine(isError ? "ERROR: " : "" + message);
+			//}
+		}
+
 		static string SelectFolder()
 		{
-			using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+			using FolderBrowserDialog dialog = new FolderBrowserDialog();
+			DialogResult result = dialog.ShowDialog();
+			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
 			{
-				DialogResult result = dialog.ShowDialog();
-				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-				{
-					return dialog.SelectedPath;
-				}
-				else
-				{
-					return null;
-				}
+				return dialog.SelectedPath;
+			}
+			else
+			{
+				return "";
 			}
 		}
 
@@ -46,7 +57,7 @@ namespace CSharpFormsTest
 			// Block outbound
 			ExecuteNetshCommand($"advfirewall firewall add rule name=\"{outRuleName}\" dir=out action=block program=\"{filePath}\" enable=yes");
 
-			Console.WriteLine($"Blocked {filePath}");
+			ReportToUser($"Blocked {filePath}");
 		}
 
 		static void ExecuteNetshCommand(string arguments)
@@ -59,60 +70,69 @@ namespace CSharpFormsTest
 				RedirectStandardError = true
 			};
 
-			using (Process process = Process.Start(processInfo))
+			using (Process? process = Process.Start(processInfo))
 			{
+				if (process == null)
+				{
+					ReportToUser("Failed to start process.", true);
+					return;
+				}
+
 				process.WaitForExit();
 				string output = process.StandardOutput.ReadToEnd();
 				string error = process.StandardError.ReadToEnd();
 
 				if (!string.IsNullOrEmpty(output))
 				{
+					// No need to show full output in a message box
+					// Shot it only on console
 					Console.WriteLine(output);
 				}
 
 				if (!string.IsNullOrEmpty(error))
 				{
-					Console.WriteLine("Error: " + error);
+					ReportToUser(error, true);
 				}
 			}
 		}
 
-		private void rulePrefixTextbox_OnTextChanged(object sender, EventArgs e)
+		private void RulePrefixTextbox_OnTextChanged(object sender, EventArgs e)
 		{
 			rulePrefixPreviewLabel.Text = $"{rulePrefixTextbox.Text}Block Inbound - Program.exe";
 		}
 
-		private void runScriptButton_Click(object sender, EventArgs e)
+		private void RunScriptButton_Click(object sender, EventArgs e)
 		{
 			string folderPath = directoryTextbox.Text;
 			string rulePrefix = rulePrefixTextbox.Text;
 
 			if (string.IsNullOrEmpty(folderPath))
 			{
-				MessageBox.Show("Please select a folder first.");
+				ReportToUser("Please select a folder first.");
 				return;
 			}
 
 			/*
 			if (string.IsNullOrEmpty(rulePrefix))
 			{
-				MessageBox.Show("Please enter a rule prefix first.");
+				ReportToUser("Please enter a rule prefix first.");
 				return;
 			}
 			*/
 
 			BlockExeFilesInFolder(folderPath, rulePrefix);
 
-			MessageBox.Show("Done!");
+			ReportToUser("Done!");
 		}
 
-		private void directoryBrowseButton_Click(object sender, EventArgs e)
+		private void DirectoryBrowseButton_Click(object sender, EventArgs e)
 		{
 			string folderPath = SelectFolder();
 
 			if (string.IsNullOrEmpty(folderPath))
 			{
-				Console.WriteLine("No folder selected.");
+
+				ReportToUser("No folder selected.", true);
 				return;
 			}
 

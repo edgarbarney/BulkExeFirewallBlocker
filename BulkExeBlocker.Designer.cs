@@ -49,7 +49,7 @@ namespace CSharpFormsTest
 			runScriptButton.TabIndex = 0;
 			runScriptButton.Text = "Block!";
 			runScriptButton.UseVisualStyleBackColor = true;
-			runScriptButton.Click += runScriptButton_Click;
+			runScriptButton.Click += RunScriptButton_Click;
 			// 
 			// directoryTextbox
 			// 
@@ -64,7 +64,7 @@ namespace CSharpFormsTest
 			rulePrefixTextbox.Name = "rulePrefixTextbox";
 			rulePrefixTextbox.Size = new Size(776, 27);
 			rulePrefixTextbox.TabIndex = 1;
-			rulePrefixTextbox.TextChanged += rulePrefixTextbox_OnTextChanged;
+			rulePrefixTextbox.TextChanged += RulePrefixTextbox_OnTextChanged;
 			// 
 			// directoryLabel
 			// 
@@ -101,7 +101,7 @@ namespace CSharpFormsTest
 			directoryBrowseButton.TabIndex = 0;
 			directoryBrowseButton.Text = "Browse";
 			directoryBrowseButton.UseVisualStyleBackColor = true;
-			directoryBrowseButton.Click += directoryBrowseButton_Click;
+			directoryBrowseButton.Click += DirectoryBrowseButton_Click;
 			// 
 			// rulePrefixPreviewHintLabel
 			// 
