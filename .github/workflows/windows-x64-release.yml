@@ -1,0 +1,52 @@
+name: Release Build (Windows x64)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build (normal)
+        run: dotnet publish -c Release -r win-x64 -o ./publish/normal
+
+      - name: Build (standalone Windows)
+        run: dotnet publish -c Release -r win-x64 --self-contained true -o ./publish/standalone
+
+      - name: Zip normal build
+        run: Compress-Archive -Path ./publish/normal/* -DestinationPath ./normal-build.zip
+
+      - name: Zip standalone build
+        run: Compress-Archive -Path ./publish/standalone/* -DestinationPath ./standalone-build.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.${{ github.run_number }}
+          release_name: "Release v1.${{ github.run_number }}"
+          body: "Automated release from GitHub Actions"
+          draft: false
+          prerelease: false
+          files: |
+            ./normal-build.zip
+            ./standalone-build.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
