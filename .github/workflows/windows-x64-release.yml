@@ -30,10 +30,10 @@ jobs:
         run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 -o ./publish/normal
 
       - name: Build (standalone Windows)
-        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/standalone
+        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish/standalone
 
       - name: Build (standalone Windows compressed)
-        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish/standalone_compressed
+        run: dotnet publish BulkExeBlocker.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish/standalone_compressed
 
       - name: Zip normal build
         run: Compress-Archive -Path ./publish/normal/* -DestinationPath ./win64_normal-build.zip
