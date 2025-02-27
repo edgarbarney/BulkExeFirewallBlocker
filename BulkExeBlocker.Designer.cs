@@ -40,14 +40,16 @@ namespace BulkExeBlocker
 			rulePrefixPreviewHintLabel = new Label();
 			rulePrefixPreviewLabel = new Label();
 			mainProgressBar = new ProgressBar();
+			blockInbound = new CheckBox();
+			blockOutbound = new CheckBox();
 			SuspendLayout();
 			// 
 			// runScriptButton
 			// 
-			runScriptButton.Location = new Point(10, 202);
+			runScriptButton.Location = new Point(10, 232);
 			runScriptButton.Margin = new Padding(3, 2, 3, 2);
 			runScriptButton.Name = "runScriptButton";
-			runScriptButton.Size = new Size(730, 97);
+			runScriptButton.Size = new Size(730, 65);
 			runScriptButton.TabIndex = 0;
 			runScriptButton.Text = "Block!";
 			runScriptButton.UseVisualStyleBackColor = true;
@@ -133,11 +135,37 @@ namespace BulkExeBlocker
 			mainProgressBar.Size = new Size(728, 32);
 			mainProgressBar.TabIndex = 3;
 			// 
+			// blockInbound
+			// 
+			blockInbound.AutoSize = true;
+			blockInbound.Checked = true;
+			blockInbound.CheckState = CheckState.Checked;
+			blockInbound.Location = new Point(12, 208);
+			blockInbound.Name = "blockInbound";
+			blockInbound.Size = new Size(103, 19);
+			blockInbound.TabIndex = 4;
+			blockInbound.Text = "Block Inbound";
+			blockInbound.UseVisualStyleBackColor = true;
+			// 
+			// blockOutbound
+			// 
+			blockOutbound.AutoSize = true;
+			blockOutbound.Checked = true;
+			blockOutbound.CheckState = CheckState.Checked;
+			blockOutbound.Location = new Point(121, 208);
+			blockOutbound.Name = "blockOutbound";
+			blockOutbound.Size = new Size(113, 19);
+			blockOutbound.TabIndex = 5;
+			blockOutbound.Text = "Block Outbound";
+			blockOutbound.UseVisualStyleBackColor = true;
+			// 
 			// BulkExeBlocker
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(752, 345);
+			Controls.Add(blockOutbound);
+			Controls.Add(blockInbound);
 			Controls.Add(mainProgressBar);
 			Controls.Add(rulePrefixHintLabel);
 			Controls.Add(rulePrefixPreviewLabel);
@@ -167,5 +195,7 @@ namespace BulkExeBlocker
 		private Label rulePrefixPreviewHintLabel;
 		private Label rulePrefixPreviewLabel;
 		private ProgressBar mainProgressBar;
+		private CheckBox blockInbound;
+		private CheckBox blockOutbound;
 	}
 }

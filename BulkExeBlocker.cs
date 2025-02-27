@@ -59,18 +59,31 @@ namespace BulkExeBlocker
 			return 0;
 		}
 
-		static void BlockExeInFirewall(string filePath, string rulePrefix)
+		void BlockExeInFirewall(string filePath, string rulePrefix)
 		{
 			string inRuleName = $"{rulePrefix}Block Inbound - {Path.GetFileName(filePath)}";
 			string outRuleName = $"{rulePrefix}Block Outbound - {Path.GetFileName(filePath)}";
 
-			// Block inbound
-			ExecuteNetshCommand($"advfirewall firewall add rule name=\"{inRuleName}\" dir=in action=block program=\"{filePath}\" enable=yes");
+			if (blockInbound.Checked)
+			{
+				// Block inbound
+				ExecuteNetshCommand($"advfirewall firewall add rule name=\"{inRuleName}\" dir=in action=block program=\"{filePath}\" enable=yes");
+			}
 
-			// Block outbound
-			ExecuteNetshCommand($"advfirewall firewall add rule name=\"{outRuleName}\" dir=out action=block program=\"{filePath}\" enable=yes");
+			if (blockOutbound.Checked)
+			{
+				// Block outbound
+				ExecuteNetshCommand($"advfirewall firewall add rule name=\"{outRuleName}\" dir=out action=block program=\"{filePath}\" enable=yes");
+			}
 
-			Globals.ReportToConsole($"Blocked EXE: {filePath}");
+			if (blockInbound.Checked || blockOutbound.Checked)
+			{
+				Globals.ReportToConsole($"Blocked EXE: {filePath} - Inbound: {blockInbound.Checked}, Outbound: {blockOutbound.Checked}");
+			}
+			else
+			{
+				Globals.ReportToConsole($"Nothing Done to EXE: {filePath} - No direction selected.");
+			}
 		}
 
 		static void ExecuteNetshCommand(string arguments)
