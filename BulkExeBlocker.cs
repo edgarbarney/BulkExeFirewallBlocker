@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace CSharpFormsTest
+namespace BulkExeBlocker
 {
 	public partial class BulkExeBlocker : Form
 	{
@@ -11,22 +11,9 @@ namespace CSharpFormsTest
 			rulePrefixPreviewLabel.Text = $"{rulePrefixTextbox.Text}Block Inbound - Program.exe";
 		}
 
-		static void ReportToUser(string message, bool isError = false)
-		{
-			// Check if console app
-			//if (Console.GetCursorPosition() == (0, 0))
-			//{
-				MessageBox.Show(message, "Bulk Exe Blocker", MessageBoxButtons.OK, isError ? MessageBoxIcon.Error : MessageBoxIcon.Information);
-			//}
-			//else
-			//{
-				Console.WriteLine(isError ? "ERROR: " : "" + message);
-			//}
-		}
-
 		static string SelectFolder()
 		{
-			using FolderBrowserDialog dialog = new FolderBrowserDialog();
+			using FolderBrowserDialog dialog = new();
 			DialogResult result = dialog.ShowDialog();
 			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
 			{
@@ -38,12 +25,38 @@ namespace CSharpFormsTest
 			}
 		}
 
-		static void BlockExeFilesInFolder(string folderPath, string rulePrefix = "")
+		int BlockExeFilesInFolder(string folderPath, string rulePrefix = "")
 		{
-			foreach (string file in System.IO.Directory.GetFiles(folderPath, "*.exe", SearchOption.AllDirectories))
+			if (string.IsNullOrEmpty(rulePrefix))
+			{
+				rulePrefix = "";
+			}
+
+			if (!Directory.Exists(folderPath))
+			{
+				Globals.ReportToUser("Folder does not exist.", true);
+				return 1;
+			}
+
+			var exeFiles = Directory.GetFiles(folderPath, "*.exe", SearchOption.AllDirectories);
+
+			if (exeFiles.Length == 0)
+			{
+				Globals.ReportToUser("No EXE files found in the folder.");
+				return 2;
+			}
+
+			mainProgressBar.Minimum = 0;
+			mainProgressBar.Maximum = exeFiles.Length;
+			mainProgressBar.Value = 0;
+
+			foreach (string file in exeFiles)
 			{
 				BlockExeInFirewall(file, rulePrefix);
+				mainProgressBar.Value++;
 			}
+
+			return 0;
 		}
 
 		static void BlockExeInFirewall(string filePath, string rulePrefix)
@@ -57,12 +70,12 @@ namespace CSharpFormsTest
 			// Block outbound
 			ExecuteNetshCommand($"advfirewall firewall add rule name=\"{outRuleName}\" dir=out action=block program=\"{filePath}\" enable=yes");
 
-			ReportToUser($"Blocked {filePath}");
+			Globals.ReportToConsole($"Blocked EXE: {filePath}");
 		}
 
 		static void ExecuteNetshCommand(string arguments)
 		{
-			ProcessStartInfo processInfo = new ProcessStartInfo("netsh", arguments)
+			ProcessStartInfo processInfo = new("netsh", arguments)
 			{
 				CreateNoWindow = true,
 				UseShellExecute = false,
@@ -74,7 +87,7 @@ namespace CSharpFormsTest
 			{
 				if (process == null)
 				{
-					ReportToUser("Failed to start process.", true);
+					Globals.ReportToUser("Failed to start process.", true);
 					return;
 				}
 
@@ -86,12 +99,12 @@ namespace CSharpFormsTest
 				{
 					// No need to show full output in a message box
 					// Shot it only on console
-					Console.WriteLine(output);
+					Globals.ReportToConsole(output);
 				}
 
 				if (!string.IsNullOrEmpty(error))
 				{
-					ReportToUser(error, true);
+					Globals.ReportToUser(error, true);
 				}
 			}
 		}
@@ -108,21 +121,22 @@ namespace CSharpFormsTest
 
 			if (string.IsNullOrEmpty(folderPath))
 			{
-				ReportToUser("Please select a folder first.");
+				Globals.ReportToUser("Please select a folder first.");
 				return;
 			}
 
 			/*
 			if (string.IsNullOrEmpty(rulePrefix))
 			{
-				ReportToUser("Please enter a rule prefix first.");
+				Globals.ReportToUser("Please enter a rule prefix first.");
 				return;
 			}
 			*/
 
-			BlockExeFilesInFolder(folderPath, rulePrefix);
-
-			ReportToUser("Done!");
+			if (BlockExeFilesInFolder(folderPath, rulePrefix) == 0)
+			{
+				Globals.ReportToUser("Process completed successfully.");
+			}
 		}
 
 		private void DirectoryBrowseButton_Click(object sender, EventArgs e)
@@ -132,7 +146,7 @@ namespace CSharpFormsTest
 			if (string.IsNullOrEmpty(folderPath))
 			{
 
-				ReportToUser("No folder selected.", true);
+				Globals.ReportToUser("No folder selected.", true);
 				return;
 			}
 

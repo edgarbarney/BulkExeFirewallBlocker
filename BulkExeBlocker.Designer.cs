@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace CSharpFormsTest
+namespace BulkExeBlocker
 {
 	partial class BulkExeBlocker
 	{
@@ -39,13 +39,15 @@ namespace CSharpFormsTest
 			directoryBrowseButton = new Button();
 			rulePrefixPreviewHintLabel = new Label();
 			rulePrefixPreviewLabel = new Label();
+			mainProgressBar = new ProgressBar();
 			SuspendLayout();
 			// 
 			// runScriptButton
 			// 
-			runScriptButton.Location = new Point(12, 270);
+			runScriptButton.Location = new Point(10, 202);
+			runScriptButton.Margin = new Padding(3, 2, 3, 2);
 			runScriptButton.Name = "runScriptButton";
-			runScriptButton.Size = new Size(776, 168);
+			runScriptButton.Size = new Size(730, 97);
 			runScriptButton.TabIndex = 0;
 			runScriptButton.Text = "Block!";
 			runScriptButton.UseVisualStyleBackColor = true;
@@ -53,51 +55,54 @@ namespace CSharpFormsTest
 			// 
 			// directoryTextbox
 			// 
-			directoryTextbox.Location = new Point(12, 32);
+			directoryTextbox.Location = new Point(10, 24);
+			directoryTextbox.Margin = new Padding(3, 2, 3, 2);
 			directoryTextbox.Name = "directoryTextbox";
-			directoryTextbox.Size = new Size(776, 27);
+			directoryTextbox.Size = new Size(730, 23);
 			directoryTextbox.TabIndex = 1;
 			// 
 			// rulePrefixTextbox
 			// 
-			rulePrefixTextbox.Location = new Point(12, 171);
+			rulePrefixTextbox.Location = new Point(10, 128);
+			rulePrefixTextbox.Margin = new Padding(3, 2, 3, 2);
 			rulePrefixTextbox.Name = "rulePrefixTextbox";
-			rulePrefixTextbox.Size = new Size(776, 27);
+			rulePrefixTextbox.Size = new Size(730, 23);
 			rulePrefixTextbox.TabIndex = 1;
 			rulePrefixTextbox.TextChanged += RulePrefixTextbox_OnTextChanged;
 			// 
 			// directoryLabel
 			// 
 			directoryLabel.AutoSize = true;
-			directoryLabel.Location = new Point(12, 9);
+			directoryLabel.Location = new Point(10, 7);
 			directoryLabel.Name = "directoryLabel";
-			directoryLabel.Size = new Size(73, 20);
+			directoryLabel.Size = new Size(58, 15);
 			directoryLabel.TabIndex = 2;
 			directoryLabel.Text = "Directory:";
 			// 
 			// rulePrefixLabel
 			// 
 			rulePrefixLabel.AutoSize = true;
-			rulePrefixLabel.Location = new Point(12, 148);
+			rulePrefixLabel.Location = new Point(10, 111);
 			rulePrefixLabel.Name = "rulePrefixLabel";
-			rulePrefixLabel.Size = new Size(155, 20);
+			rulePrefixLabel.Size = new Size(122, 15);
 			rulePrefixLabel.TabIndex = 2;
 			rulePrefixLabel.Text = "Visible Tag (Optional):";
 			// 
 			// rulePrefixHintLabel
 			// 
 			rulePrefixHintLabel.AutoSize = true;
-			rulePrefixHintLabel.Location = new Point(12, 128);
+			rulePrefixHintLabel.Location = new Point(10, 96);
 			rulePrefixHintLabel.Name = "rulePrefixHintLabel";
-			rulePrefixHintLabel.Size = new Size(427, 20);
+			rulePrefixHintLabel.Size = new Size(336, 15);
 			rulePrefixHintLabel.TabIndex = 2;
 			rulePrefixHintLabel.Text = "NOTE: In tag, It's a good practice to use seperators like { } or ( ) ";
 			// 
 			// directoryBrowseButton
 			// 
-			directoryBrowseButton.Location = new Point(12, 65);
+			directoryBrowseButton.Location = new Point(10, 49);
+			directoryBrowseButton.Margin = new Padding(3, 2, 3, 2);
 			directoryBrowseButton.Name = "directoryBrowseButton";
-			directoryBrowseButton.Size = new Size(776, 45);
+			directoryBrowseButton.Size = new Size(730, 34);
 			directoryBrowseButton.TabIndex = 0;
 			directoryBrowseButton.Text = "Browse";
 			directoryBrowseButton.UseVisualStyleBackColor = true;
@@ -106,26 +111,34 @@ namespace CSharpFormsTest
 			// rulePrefixPreviewHintLabel
 			// 
 			rulePrefixPreviewHintLabel.AutoSize = true;
-			rulePrefixPreviewHintLabel.Location = new Point(12, 212);
+			rulePrefixPreviewHintLabel.Location = new Point(10, 159);
 			rulePrefixPreviewHintLabel.Name = "rulePrefixPreviewHintLabel";
-			rulePrefixPreviewHintLabel.Size = new Size(190, 20);
+			rulePrefixPreviewHintLabel.Size = new Size(152, 15);
 			rulePrefixPreviewHintLabel.TabIndex = 2;
 			rulePrefixPreviewHintLabel.Text = "Your rules will look like this:";
 			// 
 			// rulePrefixPreviewLabel
 			// 
 			rulePrefixPreviewLabel.AutoSize = true;
-			rulePrefixPreviewLabel.Location = new Point(12, 232);
+			rulePrefixPreviewLabel.Location = new Point(10, 174);
 			rulePrefixPreviewLabel.Name = "rulePrefixPreviewLabel";
-			rulePrefixPreviewLabel.Size = new Size(25, 20);
+			rulePrefixPreviewLabel.Size = new Size(19, 15);
 			rulePrefixPreviewLabel.TabIndex = 2;
 			rulePrefixPreviewLabel.Text = "    ";
 			// 
+			// mainProgressBar
+			// 
+			mainProgressBar.Location = new Point(12, 304);
+			mainProgressBar.Name = "mainProgressBar";
+			mainProgressBar.Size = new Size(728, 32);
+			mainProgressBar.TabIndex = 3;
+			// 
 			// BulkExeBlocker
 			// 
-			AutoScaleDimensions = new SizeF(8F, 20F);
+			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
-			ClientSize = new Size(800, 450);
+			ClientSize = new Size(752, 345);
+			Controls.Add(mainProgressBar);
 			Controls.Add(rulePrefixHintLabel);
 			Controls.Add(rulePrefixPreviewLabel);
 			Controls.Add(rulePrefixPreviewHintLabel);
@@ -135,6 +148,7 @@ namespace CSharpFormsTest
 			Controls.Add(directoryTextbox);
 			Controls.Add(directoryBrowseButton);
 			Controls.Add(runScriptButton);
+			Margin = new Padding(3, 2, 3, 2);
 			Name = "BulkExeBlocker";
 			Text = "Bulk Exe Blocker";
 			ResumeLayout(false);
@@ -152,5 +166,6 @@ namespace CSharpFormsTest
 		private Button directoryBrowseButton;
 		private Label rulePrefixPreviewHintLabel;
 		private Label rulePrefixPreviewLabel;
+		private ProgressBar mainProgressBar;
 	}
 }
